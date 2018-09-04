@@ -1,0 +1,57 @@
+group 'io.alc.headergolf'
+version '0.1.0'
+
+buildscript {
+    ext.kotlin_version = '1.2.31'
+
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+apply plugin: 'kotlin'
+apply plugin: 'application'
+
+mainClassName = 'io.alc.headergolf.HeadersDownloadMainKt'
+applicationDefaultJvmArgs = ["-Doutput=headers.dat"]
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+dependencies {
+    // Argument parsing
+    compile "com.xenomachina:kotlin-argparser:2.0.3"
+
+    // Used to fetch headers from Bitcoind's REST API
+    compile "com.github.kittinunf.fuel:fuel:1.12.1"
+
+    // Used to compress version numbers
+    compile "me.lemire.integercompression:JavaFastPFOR:0.1.12"
+}
+
+jar {
+    manifest {
+        attributes(
+                'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+                'Main-Class': 'io.alc.headergolf.MainKt'
+        )
+    }
+
+    doFirst {
+        from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    }
+
+    exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/licence/*'
+}

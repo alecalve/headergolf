@@ -1,0 +1,8 @@
+*.log
+gradle/
+gradlew*
+build/
+.gradle/
+.idea/
+out/
+*.dat
