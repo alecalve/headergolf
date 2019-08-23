@@ -5,9 +5,9 @@
 package io.alc.headergolf
 
 import io.alc.headergolf.util.BitcoindRestClient
+import io.alc.headergolf.util.toHex
 import java.io.File
 import java.io.FileOutputStream
-import javax.xml.bind.DatatypeConverter
 
 /**
  * To be run using gradle run.
@@ -48,7 +48,7 @@ fun main(args: Array<String>) {
         chunks.add(chunk)
 
         val lastHeader = Header.fromBytes(chunk.takeLast(80).toByteArray())
-        hash = DatatypeConverter.printHexBinary(lastHeader.hash.reversedArray()).toLowerCase()
+        hash = lastHeader.hash.reversedArray().toHex().toLowerCase()
     } while (downloaded == batchSize)
 
     FileOutputStream(File(output)).use { stream ->
